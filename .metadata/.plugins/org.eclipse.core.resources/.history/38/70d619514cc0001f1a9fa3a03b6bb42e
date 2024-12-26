@@ -1,0 +1,5 @@
+package com.user.service.services;
+
+public interface UserService {
+
+}

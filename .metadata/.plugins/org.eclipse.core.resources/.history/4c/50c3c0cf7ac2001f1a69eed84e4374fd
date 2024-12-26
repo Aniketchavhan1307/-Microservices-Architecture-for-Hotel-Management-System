@@ -1,0 +1,5 @@
+package com.service.api.gateway.models;
+
+public class AuthResponse {
+
+}

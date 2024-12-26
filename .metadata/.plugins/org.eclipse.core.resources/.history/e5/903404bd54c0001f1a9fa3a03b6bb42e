@@ -1,0 +1,5 @@
+package com.user.service.entities;
+
+public class Rating {
+
+}

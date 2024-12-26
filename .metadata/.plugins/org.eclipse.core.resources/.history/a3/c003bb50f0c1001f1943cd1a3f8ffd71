@@ -1,0 +1,26 @@
+spring.application.name=Api-Gateway
+
+server.port= 8084
+
+
+# Gateway routes configuration
+spring.cloud.gateway.routes[0].id = USER-SERVICE
+spring.cloud.gateway.routes[0].uri = lb://USER-SERVICE
+spring.cloud.gateway.routes[0].predicates[0] = Path=/users/**
+
+spring.cloud.gateway.routes[1].id = HOTEL-SERVICE
+spring.cloud.gateway.routes[1].uri = lb://HOTEL-SERVICE
+spring.cloud.gateway.routes[1].predicates[0] = Path=/hotels/**
+spring.cloud.gateway.routes[1].predicates[1] = Path=/staffs/**
+
+spring.cloud.gateway.routes[2].id = RATING-SERVICE
+spring.cloud.gateway.routes[2].uri = lb://RATING-SERVICE
+spring.cloud.gateway.routes[2].predicates[0] = Path=/ratings/**
+
+
+# Eureka Configuration
+eureka.client.fetch-registry= true
+eureka.instance.prefer-ip-address= true
+
+eureka.client.service-url.defaultZone=http://localhost:8761/eureka/
+

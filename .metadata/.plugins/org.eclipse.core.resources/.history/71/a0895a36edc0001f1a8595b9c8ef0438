@@ -1,0 +1,15 @@
+spring.application.name=RatingService
+
+server.port=8083
+
+spring.datasource.url= mongodb://localhost:27017/microservices?createDatabaseIfNotExist=true
+spring.datasource.username= micr
+spring.datasource.password= root
+
+#driver class name is optional spring will auto-configure 
+spring.datasource.driver-class-name= com.mysql.cj.jdbc.Driver
+
+spring.jpa.hibernate.ddl-auto= update
+spring.jpa.show-sql= true
+
+

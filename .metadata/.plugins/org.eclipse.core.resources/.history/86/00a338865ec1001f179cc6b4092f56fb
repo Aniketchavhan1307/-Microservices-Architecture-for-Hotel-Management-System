@@ -1,0 +1,96 @@
+package com.user.service.implimentation;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
+import com.user.service.entities.Hotel;
+import com.user.service.entities.Rating;
+import com.user.service.entities.User;
+import com.user.service.exception.ResourceNotFoundException;
+import com.user.service.repository.UserRepository;
+import com.user.service.services.UserService;
+
+import lombok.extern.slf4j.Slf4j;
+
+
+
+@Service
+@Slf4j
+public class UserServiceImpl implements UserService
+{
+	@Autowired
+	private UserRepository userRepo;
+	
+	@Autowired
+	private RestTemplate restTemplate;
+	
+	
+	public User saveUser(User user) 
+	{
+		String id = UUID.randomUUID().toString();
+		user.setUserId(id);
+		
+	User savedUser = userRepo.save(user);
+		
+		return savedUser;
+	}
+	
+	
+
+	public List<User> getAllUser()
+	{
+		// implementing RATING SERVICE Calling using restTemplate
+		return userRepo.findAll();
+	}
+	
+	
+
+	public User getUser(String userId) 
+	{
+		
+		User user = userRepo.findById(userId).orElseThrow( () -> new ResourceNotFoundException("User with given id is not found on server with id "+userId));
+	
+	
+	// fetch rating of the above user from RATING-SERVICE  using restTemplate
+	// BY API calling :- http://localhost:8083/ratings/users/{userId}
+	
+		Rating[] ratingOfUser = restTemplate.getForObject("http://RATING-SERVICE/ratings/users/"+user.getUserId(), Rating[].class);
+		
+		  List<Rating> ratings = Arrays.stream(ratingOfUser).toList();
+		
+		  
+		  
+		  
+	List<Rating> ratingList	=  ratings.stream().map( rating -> {
+			// api call to hotel service to get the hotel
+		// http://localhost:8082/hotels/1c456d5f-96bd-44bd-b503-dc7d38c7f50f
+		
+		ResponseEntity<Hotel> hotelEntity = restTemplate.getForEntity("http://HOTEL-SERVICE/hotels/"+rating.getHotelId(), Hotel.class);
+		
+		
+		
+		Hotel hotel = hotelEntity.getBody();
+		
+		
+			// set the hotel to rating-service
+		
+		rating.setHotel(hotel);
+		
+			// return the rating
+			return rating;
+			
+		}).collect(Collectors.toList());
+		
+	user.setRating(ratingList);
+	
+		return user;
+	}
+
+}

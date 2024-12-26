@@ -1,0 +1,32 @@
+package com.hotel.services.impl;
+
+import java.util.List;
+
+import com.hotel.entities.Hotel;
+import com.hotel.repositories.HotelRepository;
+import com.hotel.services.HotelService;
+
+public class HotelServiceImpl implements HotelService
+{
+	private HotelRepository hotelRepo; 
+
+	public Hotel create(Hotel hotel) 
+	{
+		return hotelRepo.save(hotel);
+	}
+	
+	
+
+	public Hotel get(String id) 
+	{
+		return hotelRepo.findById(id).orElseThrow(() -> ResourceNotFoundException("Hotel with given id not found"));
+	}
+	
+	
+
+	public List<Hotel> getAll() 
+	{
+		return hotelRepo.findAll();
+	}
+
+}

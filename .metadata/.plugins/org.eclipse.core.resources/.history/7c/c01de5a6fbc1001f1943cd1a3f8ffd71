@@ -1,0 +1,3 @@
+spring.application.name=Config-Server
+
+server.port = 8085
